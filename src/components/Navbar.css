@@ -1,0 +1,24 @@
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 5vh;
+    background-color: whitesmoke;
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.nav-logo {
+    margin-left: 5vw;
+}
+
+.nav-right {
+    width: 50vw;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
