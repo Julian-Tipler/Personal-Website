@@ -5,7 +5,7 @@ import "./Navbar.css";
 function Navbar({ setNav }) {
   return (
     <nav className="navbar">
-      <div classname="nav-left">
+      <div className="nav-left">
         <div to="/" className="nav-logo-container nav-left">
           <div onClick={()=> setNav('home')} className='logo'>logo</div>
           <img />
