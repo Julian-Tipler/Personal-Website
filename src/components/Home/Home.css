@@ -22,8 +22,13 @@
     border-top: 1px solid lightgray;
     margin-top: 5vh;
     padding-top: 5vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.skill-selected {
-    background-color: rgb(34, 180, 238);
+
+textarea {
+    width: 200px;
+    height: 200px;
 }

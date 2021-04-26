@@ -7,7 +7,9 @@ function Navbar({ setNav }) {
     <nav className="navbar">
       <div className="nav-left">
         <div to="/" className="nav-logo-container nav-left">
-          <div onClick={()=> setNav('home')} className='logo'>logo</div>
+          <div onClick={() => setNav("home")} className="logo">
+            logo
+          </div>
           <img />
         </div>
       </div>
@@ -24,6 +26,9 @@ function Navbar({ setNav }) {
         </div>
         <div onClick={() => setNav("testimonials")} className="nav-link">
           Testimonials
+        </div>
+        <div onClick={() => setNav("Contact Me")} className="nav-link">
+          Contact Me
         </div>
       </div>
     </nav>

@@ -6,13 +6,18 @@ import EmailForm from "./EmailForm";
 let subject = "Employment opportunity with ^";
 
 let message =
-  "Hello Julian, I came across your profile and was impressed at your skill with *. I would love to discuss this opportunity with you further. \n \n Sincerely, %";
+  "Hello Julian, I came across your profile and noticed that you are experienced with *. I would love to discuss an employment opportunity with you. \n \n Sincerely, %";
 
 export default function ContactMe() {
   const [mySkills, setMySkills] = useState([
-    ["react", false],
-    ["node", false],
-    ["redux", false],
+    ["React", true],
+    ["Redux",false],
+    ["Node.js", false],
+    ["Express", false],
+    ["MongoDB", false],
+    ["SQL", false],
+    ["Ruby on Rails", false],
+    ["HTML/CSS", false]
   ]);
 
   const [preGeneratedEmail, setPreGeneratedEmail] = useState({
@@ -51,9 +56,17 @@ export default function ContactMe() {
   const handleSkill = (e) => {
     e.preventDefault();
     let targetSkill = e.target.textContent;
-    let newSkills = mySkills.map((skill) => {
-      return skill[0] !== targetSkill ? skill : [`${targetSkill}`, !skill[1]];
-    });
+    let newSkills;
+    if(targetSkill === 'Select All'){
+      newSkills = mySkills.map((skill) => {
+        return [skill[0], true];
+      });
+    }
+    else {
+      newSkills = mySkills.map((skill) => {
+        return skill[0] !== targetSkill ? skill : [`${targetSkill}`, !skill[1]];
+      });
+    }
     setMySkills([...newSkills]);
   };
 
@@ -70,20 +83,18 @@ export default function ContactMe() {
     for (let skill of mySkills) {
       skill[1] && output.push(skill[0]);
     }
-    if(output.length>1) {
-      if(output.length>2) {
-        output[output.length-1] = 'and '+ output[output.length-1]
-        return output.join(", ")
-      }
-      else {
+    switch (output.length){
+      case 0:
+        return output[0]
+      case 1:
+        return output[0]
+      case 2:
         output.splice(output.length-1, 0, "and ");
         return output.join(" ")
-      }
+      default:
+        output[output.length-1] = 'and '+ output[output.length-1]
+        return output.join(", ")
     }
-    else {
-      return output[0]
-    }
-    
 
   };
 
@@ -96,6 +107,7 @@ export default function ContactMe() {
 
     let mes = message.split("");
     mes.splice(mes.indexOf("*"), 1, stringifySkills());
+    mes.splice(mes.indexOf("%"), 1, preGeneratedEmail.name)
     mes = mes.join("");
 
     setEmail({ ...email, subject: sub, message: mes });
@@ -104,6 +116,7 @@ export default function ContactMe() {
 
   return (
     <div className="contact-me">
+      <h1>Contact Me</h1>
       {!emailGenerated && (
         <EmailGenerator
           handleSkill={handleSkill}

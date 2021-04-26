@@ -6,16 +6,18 @@ import Portfolio from "./components/Portfolio/Portfolio";
 import Footer from "./components/Footer";
 import Testimonials from "./components/Testimonials/Testimonials";
 import AboutMe from "./components/AboutMe/AboutMe";
+import ContactMe from "./components/ContactMe/ContactMe";
 
 function App() {
   const [nav, setNav] = useState("home");
   return (
     <>
       <Navbar setNav={setNav} />
-      {nav === "home" && <Home />}
-      {nav === "portfolio" && <Portfolio />}
-      {nav === "testimonials" && <Testimonials />}
-      {nav === "about-me" && <AboutMe/>}
+      <AboutMe />
+      <Home />
+      <Portfolio />
+      <Testimonials />
+      <ContactMe/>
       <Footer />
     </>
   );
