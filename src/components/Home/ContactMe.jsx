@@ -1,17 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import emailjs from "emailjs-com";
+import EmailGenerator from "./EmailGenerator";
+import EmailForm from "./EmailForm";
 
-export default function ContactMe({ skills }) {
-  const [emailContent, setEmailContent] = useState("Hi Julian," + '\n' + '\n' +
-   skills.map(skill=> {
-       return skill[0]
-   }) + 
-   '\n' + '\n' + 'Sincerely,');
+let subject = "Employment opportunity with ^";
+
+let message =
+  "Hello Julian, I came across your profile and was impressed at your skill with *. I would love to discuss this opportunity with you further. \n \n Sincerely, %";
+
+export default function ContactMe() {
+  const [mySkills, setMySkills] = useState([
+    ["react", false],
+    ["node", false],
+    ["redux", false],
+  ]);
+
+  const [preGeneratedEmail, setPreGeneratedEmail] = useState({
+    name: "",
+    company: "",
+  });
+
+  const [email, setEmail] = useState({
+    subject: "",
+    message: "",
+  });
+
+  const [emailGenerated, setEmailGenerated] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
 
   function sendEmail(e) {
     e.preventDefault();
-
+    setEmailSent("sending");
     emailjs
       .sendForm(
         "service_w6igvfk",
@@ -29,18 +48,80 @@ export default function ContactMe({ skills }) {
       );
   }
 
-  const handleChange = e => {
-    setEmailContent(e.target.value)
-  }
+  const handleSkill = (e) => {
+    e.preventDefault();
+    let targetSkill = e.target.textContent;
+    let newSkills = mySkills.map((skill) => {
+      return skill[0] !== targetSkill ? skill : [`${targetSkill}`, !skill[1]];
+    });
+    setMySkills([...newSkills]);
+  };
+
+  const handleChange = (e) => {
+    e.preventDefault();
+    setPreGeneratedEmail({
+      ...preGeneratedEmail,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const stringifySkills = () => {
+    let output = [];
+    for (let skill of mySkills) {
+      skill[1] && output.push(skill[0]);
+    }
+    if(output.length>1) {
+      if(output.length>2) {
+        output[output.length-1] = 'and '+ output[output.length-1]
+        return output.join(", ")
+      }
+      else {
+        output.splice(output.length-1, 0, "and ");
+        return output.join(" ")
+      }
+    }
+    else {
+      return output[0]
+    }
+    
+
+  };
+
+  const handleGenerate = (e) => {
+    e.preventDefault();
+
+    let sub = subject.split("");
+    sub.splice(sub.indexOf("^"), 1, preGeneratedEmail.company);
+    sub = sub.join("");
+
+    let mes = message.split("");
+    mes.splice(mes.indexOf("*"), 1, stringifySkills());
+    mes = mes.join("");
+
+    setEmail({ ...email, subject: sub, message: mes });
+    setEmailGenerated(true);
+  };
 
   return (
-    <form className="contact-form" onSubmit={sendEmail}>
-      <input type="hidden" name="contact_number" />
-      <label>Name</label>
-      <input type="text" name="user_name" />
-      <label>Message</label>
-      <textarea name="message" onChange={handleChange} value={emailContent} />
-      <input type="submit" value="Send" />
-    </form>
+    <div className="contact-me">
+      {!emailGenerated && (
+        <EmailGenerator
+          handleSkill={handleSkill}
+          mySkills={mySkills}
+          handleGenerate={handleGenerate}
+          handleChange={handleChange}
+        />
+      )}
+      {emailGenerated && !emailSent && (
+        <EmailForm sendEmail={sendEmail} email={email} />
+      )}
+      {emailSent === "sending" ? <div>sending...</div> : undefined}
+      {emailSent === true && (
+        <div>
+          Thank you for your interest! I will do my best to reply to you within
+          1-2 days.
+        </div>
+      )}
+    </div>
   );
 }
